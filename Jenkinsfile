@@ -5,7 +5,8 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Checking out code from GitHub repository...'
-                git 'https://github.com/umerfaro/lab11-12.git'
+                git branch: 'main',
+                    url: 'https://github.com/umerfaro/lab11-12.git'
             }
         }
 
@@ -33,8 +34,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 echo 'Pushing Docker image to Docker Hub...'
-                withCredentials([string(credentialsId: 'papa1122@', variable: 'papa1122@')]) {
-                    bat 'docker login -u umer12314sr -p $papa1122@'
+                withCredentials([string(credentialsId: 'papa1122@', variable: 'DOCKER_PASSWORD')]) {
+                    bat 'docker login -u umer12314sr -p %DOCKER_PASSWORD%'
                     bat 'docker tag my-reactjs-app:latest umer12314sr/my-reactjs-app:latest'
                     bat 'docker push umer12314sr/my-reactjs-app:latest'
                 }
