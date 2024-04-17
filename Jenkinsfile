@@ -1,68 +1,44 @@
 pipeline {
     agent any
 
-    environment {
-        // Define Docker image tag and repository
-        DOCKER_IMAGE = 'yourdockerhubusername/simple-reactjs-app'
-    }
-
     stages {
         stage('Checkout') {
             steps {
-                // Clones the GitHub repository
-                git 'https://github.com/aditya-sridhar/simple-reactjs-app'
+                echo 'Checking out code from GitHub repository...'
+                git 'https://github.com/umerfaro/lab11-12.git'
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Dependency Installation') {
             steps {
-                // Running dependency installation for a Node.js project
-                script {
-                    docker.image('node:14-alpine').inside {
-                        sh 'npm install'
-                    }
-                }
+                echo 'Installing dependencies for the project...'
+                sh 'npm install'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    // Building the Docker image
-                    docker.build("$DOCKER_IMAGE")
-                }
+                echo 'Building Docker image...'
+                sh 'docker build -t my-reactjs-app:latest .'
             }
         }
 
         stage('Run Docker Image') {
             steps {
-                script {
-                    // Running the Docker image to ensure it's working
-                    docker.image("$DOCKER_IMAGE").run()
-                }
+                echo 'Running Docker image...'
+                sh 'docker run -d -p 3000:3000 my-reactjs-app:latest'
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                script {
-                    // Logging into Docker Hub and pushing the image
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerHubCredentials') {
-                        docker.image("$DOCKER_IMAGE").push()
-                    }
+                echo 'Pushing Docker image to Docker Hub...'
+                withCredentials([string(credentialsId: 'DOCKER_HUB_PASSWORD', variable: 'DOCKER_HUB_PASSWORD')]) {
+                    sh 'docker login -u <DOCKER_HUB_USERNAME> -p $DOCKER_HUB_PASSWORD'
+                    sh 'docker tag my-reactjs-app:latest <DOCKER_HUB_USERNAME>/my-reactjs-app:latest'
+                    sh 'docker push <DOCKER_HUB_USERNAME>/my-reactjs-app:latest'
                 }
             }
-        }
-    }
-
-    post {
-        success {
-            // Actions to perform after successful execution
-            echo 'Pipeline executed successfully!'
-        }
-        failure {
-            // Actions to perform if the pipeline fails
-            echo 'Pipeline failed!'
         }
     }
 }
