@@ -6,7 +6,7 @@ pipeline {
             steps {
                 echo 'Checking out code from GitHub repository...'
                 git branch: 'main',
-                    url: 'https://github.com/umerfaro/lab11-12.git'
+                    url: 'https://github.com/umerfaro/lab11-12'
             }
         }
 
