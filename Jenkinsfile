@@ -12,21 +12,21 @@ pipeline {
         stage('Dependency Installation') {
             steps {
                 echo 'Installing dependencies for the project...'
-                sh 'npm install'
+                bat 'npm install'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                sh 'docker build -t my-reactjs-app:latest .'
+                bat 'docker build -t my-reactjs-app:latest .'
             }
         }
 
         stage('Run Docker Image') {
             steps {
                 echo 'Running Docker image...'
-                sh 'docker run -d -p 3000:3000 my-reactjs-app:latest'
+                bat 'docker run -d -p 3000:3000 my-reactjs-app:latest'
             }
         }
 
@@ -34,9 +34,9 @@ pipeline {
             steps {
                 echo 'Pushing Docker image to Docker Hub...'
                 withCredentials([string(credentialsId: 'papa1122@', variable: 'papa1122@')]) {
-                    sh 'docker login -u umer12314sr -p $papa1122@'
-                    sh 'docker tag my-reactjs-app:latest umer12314sr/my-reactjs-app:latest'
-                    sh 'docker push umer12314sr/my-reactjs-app:latest'
+                    bat 'docker login -u umer12314sr -p $papa1122@'
+                    bat 'docker tag my-reactjs-app:latest umer12314sr/my-reactjs-app:latest'
+                    bat 'docker push umer12314sr/my-reactjs-app:latest'
                 }
             }
         }
