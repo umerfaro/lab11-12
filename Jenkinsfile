@@ -33,10 +33,10 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 echo 'Pushing Docker image to Docker Hub...'
-                withCredentials([string(credentialsId: 'DOCKER_HUB_PASSWORD', variable: 'DOCKER_HUB_PASSWORD')]) {
-                    sh 'docker login -u <DOCKER_HUB_USERNAME> -p $DOCKER_HUB_PASSWORD'
-                    sh 'docker tag my-reactjs-app:latest <DOCKER_HUB_USERNAME>/my-reactjs-app:latest'
-                    sh 'docker push <DOCKER_HUB_USERNAME>/my-reactjs-app:latest'
+                withCredentials([string(credentialsId: 'papa1122@', variable: 'papa1122@')]) {
+                    sh 'docker login -u umer12314sr -p $papa1122@'
+                    sh 'docker tag my-reactjs-app:latest umer12314sr/my-reactjs-app:latest'
+                    sh 'docker push umer12314sr/my-reactjs-app:latest'
                 }
             }
         }
