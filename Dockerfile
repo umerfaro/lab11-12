@@ -1,12 +1,16 @@
-FROM node:16-alpine as build
+FROM node:14
 
 WORKDIR /app
 
 COPY package*.json ./
 
-# Clear npm cache and install with verbose logging
-RUN npm cache clean --force && npm install --verbose
+RUN npm install
 
 COPY . .
 
-CMD ["npm", "run", "build"]
+RUN npm run build
+
+RUN npm install -g serve
+CMD serve -s build -l 5000
+
+EXPOSE 5000
