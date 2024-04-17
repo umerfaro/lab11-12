@@ -4,40 +4,38 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out code from GitHub repository...'
-                git branch: 'main',
-                    url: 'https://github.com/umerfaro/lab11-12'
+                git 'https://github.com/ahmedkhan935/Lab10-11-SCD.git'
             }
         }
 
         stage('Dependency Installation') {
             steps {
-                echo 'Installing dependencies for the project...'
                 bat 'npm install'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                echo 'Building Docker image...'
-                bat 'docker build -t my-reactjs-app:latest .'
+                bat 'docker build -t my-app .'
             }
         }
 
         stage('Run Docker Image') {
             steps {
-                echo 'Running Docker image...'
-                bat 'docker run -d -p 3000:3000 my-reactjs-app:latest'
+                bat 'docker run -d --name my-app-instance my-app'
             }
         }
+        stage('Tag docker image') {
+            steps {
+                bat 'docker tag my-app ahmed9350/my-app'
+            }
+        }   
 
         stage('Push Docker Image') {
             steps {
-                echo 'Pushing Docker image to Docker Hub...'
-                withCredentials([string(credentialsId: 'papa1122@', variable: 'DOCKER_PASSWORD')]) {
-                    bat 'docker login -u umer12314sr -p %DOCKER_PASSWORD%'
-                    bat 'docker tag my-reactjs-app:latest umer12314sr/my-reactjs-app:latest'
-                    bat 'docker push umer12314sr/my-reactjs-app:latest'
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
+                    bat 'docker push ahmed9350/my-app'
                 }
             }
         }
